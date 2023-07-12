@@ -1,37 +1,51 @@
 # Create a VPC
 resource "aws_vpc" "my_vpc" {
   cidr_block = "10.0.0.0/16"
+
+  tags = {
+    Name = "my-vpc"
+  }
 }
 
 # Create public subnet
 resource "aws_subnet" "public_subnet" {
   vpc_id                  = aws_vpc.my_vpc.id
   cidr_block              = "10.0.1.0/24"
-  availability_zone       = "us-east-1a"
+  availability_zone       = "us-west-2a"
   map_public_ip_on_launch = true
+
+  tags = {
+    Name = "public-subnet"
+  }
 }
 
 # Create private subnet
 resource "aws_subnet" "private_subnet" {
   vpc_id                  = aws_vpc.my_vpc.id
   cidr_block              = "10.0.2.0/24"
-  availability_zone       = "us-east-1b"
+  availability_zone       = "us-west-2b"
+
+  tags = {
+    Name = "private-subnet"
+  }
 }
 
 # Create an Internet Gateway
 resource "aws_internet_gateway" "my_gateway" {
   vpc_id = aws_vpc.my_vpc.id
-}
 
-# Attach Internet Gateway to VPC
-resource "aws_vpc_attachment" "my_gateway_attachment" {
-  vpc_id             = aws_vpc.my_vpc.id
-  internet_gateway_id = aws_internet_gateway.my_gateway.id
+  tags = {
+    Name = "my-internet-gateway"
+  }
 }
 
 # Create a route table for public subnet
 resource "aws_route_table" "public_route_table" {
   vpc_id = aws_vpc.my_vpc.id
+
+  tags = {
+    Name = "public-route-table"
+  }
 }
 
 # Create a route for public subnet
@@ -50,4 +64,8 @@ resource "aws_route_table_association" "public_route_association" {
 # Create a route table for private subnet
 resource "aws_route_table" "private_route_table" {
   vpc_id = aws_vpc.my_vpc.id
+
+  tags = {
+    Name = "private-route-table"
+  }
 }
